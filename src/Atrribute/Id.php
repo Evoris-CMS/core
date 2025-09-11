@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS\Core\Atrribute;
+namespace Evoris\Core\Atrribute;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Id

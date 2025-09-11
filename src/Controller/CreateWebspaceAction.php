@@ -1,9 +1,9 @@
 <?php
 
-namespace CMS\Core\Controller;
+namespace Evoris\Core\Controller;
 
-use CMS\Core\Aggregate\Webspace;
-use CMS\Core\Id\WebspaceId;
+use Evoris\Core\Aggregate\Webspace;
+use Evoris\Core\Id\WebspaceId;
 use Patchlevel\EventSourcing\Repository\Repository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

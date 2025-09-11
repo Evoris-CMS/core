@@ -1,17 +1,17 @@
 <?php
 
-namespace CMS\Core\Aggregate;
+namespace Evoris\Core\Aggregate;
 
-use CMS\Core\Command\AddPage;
-use CMS\Core\Command\CreateWebspace;
-use CMS\Core\Command\DeployPage;
-use CMS\Core\Event\PageAdded;
-use CMS\Core\Event\PageRemoved;
-use CMS\Core\Event\PageUpdated;
-use CMS\Core\Event\WebspaceCreated;
-use CMS\Core\Id\WebspaceId;
-use CMS\Core\Page\PageInterface;
-use CMS\Core\Service\PageUtillity;
+use Evoris\Core\Command\AddPage;
+use Evoris\Core\Command\CreateWebspace;
+use Evoris\Core\Command\DeployPage;
+use Evoris\Core\Event\PageAdded;
+use Evoris\Core\Event\PageRemoved;
+use Evoris\Core\Event\PageUpdated;
+use Evoris\Core\Event\WebspaceCreated;
+use Evoris\Core\Id\WebspaceId;
+use Evoris\Core\Page\PageInterface;
+use Evoris\Core\Service\PageUtillity;
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
 use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Aggregate;

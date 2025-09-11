@@ -1,9 +1,9 @@
 <?php
 
-namespace CMS\Core\Page;
+namespace Evoris\Core\Page;
 
-use CMS\Core\Atrribute as Nova;
-use CMS\Core\Id\PageId;
+use Evoris\Core\Atrribute as Nova;
+use Evoris\Core\Id\PageId;
 
 #[Nova\Page(name: 'page')]
 class Page implements PageInterface

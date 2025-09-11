@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS\Core;
+namespace Evoris\Core;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

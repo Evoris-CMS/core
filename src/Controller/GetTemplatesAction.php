@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS\Core\Controller;
+namespace Evoris\Core\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;

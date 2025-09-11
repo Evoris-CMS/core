@@ -1,10 +1,10 @@
 <?php
 
-namespace CMS\Core\Command;
+namespace Evoris\Core\Command;
 
-use CMS\Core\Id\WebspaceId;
-use CMS\Core\Page\Page;
-use CMS\Core\Page\PageInterface;
+use Evoris\Core\Id\WebspaceId;
+use Evoris\Core\Page\Page;
+use Evoris\Core\Page\PageInterface;
 use Patchlevel\EventSourcing\Attribute\Id;
 
 final readonly class AddPage

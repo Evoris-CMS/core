@@ -1,5 +1,5 @@
 <?php
-namespace CMS\Core\Event;
+namespace Evoris\Core\Event;
 
 
 use Patchlevel\EventSourcing\Aggregate\Uuid;

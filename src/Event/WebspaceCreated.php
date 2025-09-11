@@ -1,7 +1,7 @@
 <?php
-namespace CMS\Core\Event;
+namespace Evoris\Core\Event;
 
-use CMS\Core\Id\WebspaceId;
+use Evoris\Core\Id\WebspaceId;
 use Patchlevel\EventSourcing\Attribute\Event;
 
 #[Event('leaf.webspace.created')]

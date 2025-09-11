@@ -1,10 +1,10 @@
 <?php
 
-namespace CMS\Core\Event;
+namespace Evoris\Core\Event;
 
-use CMS\Core\Id\WebspaceId;
-use CMS\Core\Normalizer\PageNormalizer;
-use CMS\Core\Page\PageInterface;
+use Evoris\Core\Id\WebspaceId;
+use Evoris\Core\Normalizer\PageNormalizer;
+use Evoris\Core\Page\PageInterface;
 use Patchlevel\EventSourcing\Attribute\Event;
 
 #[Event('leaf.page.added')]

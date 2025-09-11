@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS\Core\Exception;
+namespace Evoris\Core\Exception;
 
 class PageException extends \Exception implements NovaExceptionInterface
 {

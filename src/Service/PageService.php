@@ -1,9 +1,9 @@
 <?php
 
-namespace CMS\Core\Service;
+namespace Evoris\Core\Service;
 
-use CMS\Core\Atrribute\Page;
-use CMS\Core\Exception\PageException;
+use Evoris\Core\Atrribute\Page;
+use Evoris\Core\Exception\PageException;
 
 class PageService
 {

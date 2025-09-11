@@ -1,8 +1,8 @@
 <?php
 
-namespace CMS\Core\Page;
+namespace Evoris\Core\Page;
 
-use CMS\Core\Id\PageId;
+use Evoris\Core\Id\PageId;
 
 interface PageInterface
 {

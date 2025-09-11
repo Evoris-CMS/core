@@ -1,8 +1,8 @@
 <?php
 
-namespace CMS\Core\Command;
+namespace Evoris\Core\Command;
 
-use CMS\Core\Id\WebspaceId;
+use Evoris\Core\Id\WebspaceId;
 use Patchlevel\EventSourcing\Attribute\Id;
 
 final readonly class CreateWebspace

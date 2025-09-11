@@ -1,10 +1,10 @@
 <?php
 
-namespace CMS\Core\Normalizer;
+namespace Evoris\Core\Normalizer;
 
-use CMS\Core\Atrribute\Page as PageAttribute;
-use CMS\Core\Page\Page;
-use CMS\Core\Page\PageInterface;
+use Evoris\Core\Atrribute\Page as PageAttribute;
+use Evoris\Core\Page\Page;
+use Evoris\Core\Page\PageInterface;
 use Patchlevel\Hydrator\Normalizer\InvalidArgument;
 use Patchlevel\Hydrator\Normalizer\Normalizer;
 use Symfony\Component\Serializer\SerializerInterface;

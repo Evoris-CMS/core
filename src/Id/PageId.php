@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS\Core\Id;
+namespace Evoris\Core\Id;
 
 use Patchlevel\EventSourcing\Aggregate\AggregateRootId;
 use Patchlevel\EventSourcing\Aggregate\RamseyUuidV7Behaviour;

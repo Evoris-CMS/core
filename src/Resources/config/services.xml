@@ -7,7 +7,7 @@
     <services>
         <defaults autowire="true" autoconfigure="true" public="false" />
 
-        <prototype namespace="CMS\Core\" resource="../../*">
+        <prototype namespace="Evoris\Core\" resource="../../*">
             <exclude>../../{DependencyInjection,Resources,Tests}</exclude>
         </prototype>
     </services>

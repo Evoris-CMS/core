@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS\Core\Exception;
+namespace Evoris\Core\Exception;
 
 interface NovaExceptionInterface extends \Throwable
 {

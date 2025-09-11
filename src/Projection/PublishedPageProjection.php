@@ -1,9 +1,9 @@
 <?php
 
-namespace CMS\Core\Projection;
+namespace Evoris\Core\Projection;
 
 use Doctrine\DBAL\Connection;
-use CMS\Core\Event\PagePublish;
+use Evoris\Core\Event\PagePublish;
 use Patchlevel\EventSourcing\Attribute\Projector;
 use Patchlevel\EventSourcing\Attribute\Setup;
 use Patchlevel\EventSourcing\Attribute\Subscribe;

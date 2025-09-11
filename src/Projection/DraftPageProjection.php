@@ -1,14 +1,14 @@
 <?php
 
-namespace CMS\Core\Projection;
+namespace Evoris\Core\Projection;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
-use CMS\Core\Event\PageAdded;
-use CMS\Core\Event\PageCreated;
-use CMS\Core\Event\PagePublish;
-use CMS\Core\Event\PageUpdated;
-use CMS\Core\Id\PageId;
+use Evoris\Core\Event\PageAdded;
+use Evoris\Core\Event\PageCreated;
+use Evoris\Core\Event\PagePublish;
+use Evoris\Core\Event\PageUpdated;
+use Evoris\Core\Id\PageId;
 use Patchlevel\EventSourcing\Attribute\Projector;
 use Patchlevel\EventSourcing\Attribute\Setup;
 use Patchlevel\EventSourcing\Attribute\Subscribe;
