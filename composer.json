@@ -1,0 +1,22 @@
+{
+  "name": "evoris/core",
+  "version": "0.1.0",
+  "description": "Core package for Evoris",
+  "authors": [
+    {
+      "name": "Thomas Hanke",
+      "email": "thomas@han.ke"
+    }
+  ],
+  "require": {
+    "php": ">=8.4",
+    "patchlevel/event-sourcing": "^3.12",
+    "symfony/serializer": "^6.4",
+    "symfony/http-foundation": "^6.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Evoris\\Core\\": "src/"
+    }
+  }
+}
