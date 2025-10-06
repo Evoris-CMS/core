@@ -1,0 +1,4 @@
+evoris_core:
+  resource: ../src/Controller
+  type: attribute
+  name_prefix: evoris_
