@@ -6,11 +6,14 @@ use Evoris\Core\Command\AddPage;
 use Evoris\Core\Command\CreateWebspace;
 use Evoris\Core\Command\DeployPage;
 use Evoris\Core\Event\PageAdded;
+use Evoris\Core\Event\PagePublish;
 use Evoris\Core\Event\PageRemoved;
 use Evoris\Core\Event\PageUpdated;
 use Evoris\Core\Event\WebspaceCreated;
+use Evoris\Core\Id\PageId;
 use Evoris\Core\Id\WebspaceId;
 use Evoris\Core\Page\PageInterface;
+use Evoris\Core\Service\PageService;
 use Evoris\Core\Service\PageUtillity;
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
 use Patchlevel\EventSourcing\Aggregate\Uuid;
@@ -20,7 +23,7 @@ use Patchlevel\EventSourcing\Attribute\Handle;
 use Patchlevel\EventSourcing\Attribute\Id;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Aggregate(name: 'leafWebspace')]
+#[Aggregate(name: 'evorisWebspace')]
 final class Webspace extends BasicAggregateRoot
 {
     #[Id]
@@ -28,7 +31,7 @@ final class Webspace extends BasicAggregateRoot
 
     private string $host;
 
-    /** @var array<string,PageInterface> */
+    /** @var array<string,object> */
     private array $pages = [];
 
     public function id(): WebspaceId
@@ -60,20 +63,17 @@ final class Webspace extends BasicAggregateRoot
         return $self;
     }
 
-    private function extractPath(PageInterface $page): string
+    private function extractPath(string $slug, ?string $parentId): string
     {
-        $parent = $page->parent();
-        $path = [$page->slug()];
+        $path = [$slug];
 
-        while ($parent !== null) {
-            $parent = $this->pages[$parent->toString()];
-            $path[] = $parent->slug();
-            $parent = $parent->parent();
+        while($parentId !== null) {
+            $parent = $this->pages[$parentId];
+            $path[] = $parent['slug'];
+            $parentId = $parent['parent'];
         }
 
-        $path = array_reverse($path);
-
-        return implode('/', $path);
+        return implode('/', array_reverse($path));
     }
 
     #[Handle]
@@ -90,42 +90,35 @@ final class Webspace extends BasicAggregateRoot
     {
         $page = $command->page;
 
-        // ignore if already present
-        if (array_key_exists($page->id()->toString(), $this->pages)) {
-            return;
+        $pageName = PageService::getPageName($page);
+
+        $serializedPage = $serializer->serialize($page, 'json');
+        $deserializedPage = $serializer->deserialize($serializedPage, $page::class, 'json');
+
+        if(serialize($page) !== serialize($deserializedPage)) {
+            throw new \Exception('Page is not valid');
         }
 
         $this->recordThat(new PageAdded(
             $this->id,
-            $this->extractPath($page),
-            $serializer->serialize([
-                'name' => PageUtillity::getPageName($page),
-                'object' => $page,
-            ], )
+            PageId::generate(),
+            $command->parentId,
+            $this->extractPath($command->slug, $command->parentId?->toString()),
+            $command->title,
+            $command->slug,
+            $pageName,
+            $serializedPage,
         ));
     }
-    
-    public function deployPage(DeployPage $command): void
+
+    #[Handle]
+    public function deployPage(DeployPage $command, SerializerInterface $serializer): void
     {
-        
-    }
-
-    public function updatePage(PageInterface $page): void
-    {
-        if(!array_key_exists($page->id()->toString(), $this->pages)) {
-            return;
-        }
-
-        $this->recordThat(new PageUpdated($this->id, $this->extractPath($page), $page));
-    }
-
-    public function removePage(Uuid $pageId): void
-    {
-        if (!in_array($pageId->toString(), $this->pages, true)) {
-            return; // nothing to remove
-        }
-
-        $this->recordThat(new PageRemoved($this->id, $pageId));
+        $this->recordThat(new PagePublish(
+            $this->id,
+            $command->path,
+            $serializer->serialize($command->page, 'json')
+        ));
     }
 
     #[Apply]
@@ -139,9 +132,15 @@ final class Webspace extends BasicAggregateRoot
     #[Apply]
     protected function applyPageAdded(PageAdded $event): void
     {
-        $id = $event->page->id()->toString();
+        $id = $event->pageId->toString();
         if (!array_key_exists($id, $this->pages)) {
-            $this->pages[$id] = $event->page;
+            $this->pages[$id] = [
+                'slug' => $event->slug,
+                'parent' => $event->parentId,
+                'title' => $event->title,
+                'type' => $event->type,
+                'content' => $event->serializedPage
+            ];
         }
     }
 

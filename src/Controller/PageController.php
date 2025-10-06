@@ -3,11 +3,13 @@
 namespace Evoris\Core\Controller;
 
 use Evoris\Core\Aggregate\Webspace;
+use Evoris\Core\Command\AddPage;
 use Evoris\Core\Id\PageId;
 use Evoris\Core\Id\WebspaceId;
 use Evoris\Core\Page\Page;
 use Patchlevel\EventSourcing\CommandBus\CommandBus;
 use Patchlevel\EventSourcing\Repository\Repository;
+use Patchlevel\EventSourcing\Repository\RepositoryManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -17,20 +19,21 @@ use Twig\Environment;
 #[AsController]
 class PageController
 {
-    /** @param Repository<Webspace> $leafWebspaceRepository */
+    private readonly Repository $evorisWebspaceRepository;
     public function __construct(
         private readonly Environment $twig,
-        private readonly Repository $leafWebspaceRepository,
+        RepositoryManager $repositoryManager,
         private readonly CommandBus $commandBus,
     )
     {
+        $this->evorisWebspaceRepository = $repositoryManager->get(Webspace::class);
     }
 
     #[Route(path: '/webspace/{webspaceId}/pages', name: 'list_pages', methods: ['GET'] )]
     public function listAction(Request $request): Response
     {
         $webspaceId = WebspaceId::fromString($request->attributes->get('webspaceId'));
-        $webspace = $this->leafWebspaceRepository->load($webspaceId);
+        $webspace = $this->evorisWebspaceRepository->load($webspaceId);
 
         // Currently listing only root-level pages as provided by existing logic
         $pages = array_filter($webspace->pages(), fn($page) => $page->parent() === null);
@@ -48,7 +51,7 @@ class PageController
     public function createAction(Request $request): Response
     {
         $webspaceId = WebspaceId::fromString($request->attributes->get('webspaceId'));
-        $webspace = $this->leafWebspaceRepository->load($webspaceId);
+        $webspace = $this->evorisWebspaceRepository->load($webspaceId);
 
         $title = trim((string) $request->request->get('title', ''));
         $slug = trim((string) $request->request->get('slug', ''));
@@ -69,9 +72,16 @@ class PageController
             }
 
             if (empty($errors)) {
-                $page = new Page(PageId::generate(), $slug, $title, $content, null);
+                $page = new Page(PageId::generate()->toString(), $slug, $title, $content, null);
 
-                $this->commandBus->dispatch(new AddPage($webspaceId, $page));
+                $this->commandBus->dispatch(
+                    new AddPage(
+                    $webspaceId,
+                    null,
+                    $slug,
+                    $title,
+                    $page)
+                );
 
                 $success = true;
                 // clear form on success

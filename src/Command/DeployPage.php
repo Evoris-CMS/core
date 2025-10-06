@@ -10,6 +10,7 @@ final class DeployPage
     public function __construct(
         #[Id]
         public readonly WebspaceId $webspaceId,
+        public readonly string $path,
         public readonly object $page
     )
     {

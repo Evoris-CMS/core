@@ -7,13 +7,12 @@ use Evoris\Core\Normalizer\PageNormalizer;
 use Evoris\Core\Page\PageInterface;
 use Patchlevel\EventSourcing\Attribute\Event;
 
-#[Event('leaf.page.publish')]
+#[Event('evoris.page.publish')]
 final class PagePublish
 {
     public function __construct(
         public readonly WebspaceId $webspaceId,
         public readonly string $path,
-        #[PageNormalizer()]
-        public readonly PageInterface $page,
+        public readonly string $pageSerialized,
     ) {}
 }

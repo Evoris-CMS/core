@@ -5,6 +5,7 @@ namespace Evoris\Core\Controller;
 use Evoris\Core\Aggregate\Webspace;
 use Evoris\Core\Id\WebspaceId;
 use Patchlevel\EventSourcing\Repository\Repository;
+use Patchlevel\EventSourcing\Repository\RepositoryManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -15,11 +16,12 @@ use Twig\Environment;
 #[Route(path: '/webspace', name: 'create_webspace', methods: ['GET', 'POST'])]
 class CreateWebspaceAction
 {
-    /** @param Repository<Webspace> $webspaceRepository */
+    private readonly Repository $evorisWebspaceRepository;
     public function __construct(
         private readonly Environment $twig,
-        private readonly Repository $leafWebspaceRepository,
+        RepositoryManager $repositoryManager,
     ) {
+        $this->evorisWebspaceRepository = $repositoryManager->get(Webspace::class);
     }
 
     public function __invoke(Request $request): Response
@@ -36,7 +38,7 @@ class CreateWebspaceAction
                 $id = WebspaceId::generate();
                 $webspace = Webspace::create($id, $hostname);
 
-                $this->leafWebspaceRepository->save($webspace);
+                $this->evorisWebspaceRepository->save($webspace);
 
                 $success = true;
             }

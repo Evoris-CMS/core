@@ -7,7 +7,7 @@ use Evoris\Core\Normalizer\PageNormalizer;
 use Evoris\Core\Page\PageInterface;
 use Patchlevel\EventSourcing\Attribute\Event;
 
-#[Event('leaf.page.updated')]
+#[Event('evoris.page.updated')]
 final class PageUpdated
 {
     public function __construct(
