@@ -9,6 +9,7 @@ use Evoris\Core\Id\WebspaceId;
 use Patchlevel\EventSourcing\Attribute\Projector;
 use Patchlevel\EventSourcing\Attribute\Setup;
 use Patchlevel\EventSourcing\Attribute\Subscribe;
+use Patchlevel\EventSourcing\Attribute\Teardown;
 
 /**
  * @psalm-type PageData = array{
@@ -46,10 +47,25 @@ final class PageProjection
             ->fetchAllAssociative();
     }
 
+    /**
+     * @return PageData|false
+     */
+    public function getPageByPath(string $host, string $path): array|false
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('*')
+            ->from($this->table())
+            ->where('path = :path')
+            ->andWhere('host = :host')
+            ->setParameter('path', $path)
+            ->setParameter('host', $host)
+            ->setMaxResults(1)
+            ->fetchAssociative();
+    }
+
     #[Subscribe(PageAdded::class)]
     public function onPageAdded(
         PageAdded $event,
-        \DateTimeImmutable $recordedOn,
     )
     {
         $this->connection->insert(
@@ -57,13 +73,14 @@ final class PageProjection
             [
                 'id' => $event->pageId->toString(),
                 'webspace_id' => $event->webspaceId->toString(),
+                'host' => $event->host,
                 'path' => $event->path,
                 'title' => $event->title,
                 'slug' => $event->slug,
                 'type' => $event->type,
                 'content' => $event->serializedPage,
-                'created_at' => $recordedOn->format('Y-m-d H:i:s'),
-                'updated_at' => $recordedOn->format('Y-m-d H:i:s'),
+                'created_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+                'updated_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
                 'deployed_at' => null,
             ]
         );
@@ -75,17 +92,20 @@ final class PageProjection
         $this->connection->executeStatement("CREATE TABLE IF NOT EXISTS {$this->table()} (
             id VARCHAR(36) NOT NULL,
             webspace_id VARCHAR(36) NOT NULL,
+            host VARCHAR(255) NOT NULL,
             path VARCHAR(255) NOT NULL,
             title VARCHAR(255) NOT NULL,
             slug VARCHAR(255) NOT NULL,
             type VARCHAR(255) NOT NULL,
             content text NOT NULL,
             created_at TIMESTAMP NOT NULL,
-            updated_at TIMESTAMP NOT NULL
+            updated_at TIMESTAMP NOT NULL,
+            deployed_at TIMESTAMP NULL
             );
         ");
     }
 
+    #[Teardown]
     public function drop(): void
     {
         $this->connection->executeStatement("DROP TABLE IF EXISTS {$this->table()};");

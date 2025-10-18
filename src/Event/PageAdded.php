@@ -15,6 +15,7 @@ final class PageAdded
         public readonly WebspaceId $webspaceId,
         public readonly PageId $pageId,
         public readonly ?PageId $parentId,
+        public readonly string $host,
         public readonly string $path,
         public readonly string $title,
         public readonly string $slug,

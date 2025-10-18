@@ -14,6 +14,7 @@ final readonly class AddPage
         #[Id]
         public WebspaceId $webspaceId,
         public ?PageId $parentId,
+        public string $host,
         public string $slug,
         public string $title,
         public object $page

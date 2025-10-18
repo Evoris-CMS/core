@@ -73,7 +73,7 @@ final class Webspace extends BasicAggregateRoot
             $parentId = $parent['parent'];
         }
 
-        return implode('/', array_reverse($path));
+        return "/".implode('/', array_reverse($path));
     }
 
     #[Handle]
@@ -103,6 +103,7 @@ final class Webspace extends BasicAggregateRoot
             $this->id,
             PageId::generate(),
             $command->parentId,
+            $command->host,
             $this->extractPath($command->slug, $command->parentId?->toString()),
             $command->title,
             $command->slug,

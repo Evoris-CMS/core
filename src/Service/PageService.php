@@ -2,16 +2,15 @@
 
 namespace Evoris\Core\Service;
 
-use Evoris\Core\Atrribute\Id;
 use Evoris\Core\Atrribute\Page;
-use Evoris\Core\Atrribute\Slug;
-use Evoris\Core\Atrribute\Title;
 use Evoris\Core\Exception\PageException;
 use Evoris\Core\Id\PageId;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PageService
 {
-    public function __construct()
+    public function __construct(private readonly array $classesByTag)
     {
     }
     
@@ -31,28 +30,21 @@ class PageService
 
     public static function getSlug(object $page): string
     {
-        $refl = new \ReflectionClass($page);
-
-        foreach ($refl->getProperties() as $property) {
-            $attrs = $property->getAttributes(Slug::class);
-            if ($attrs === []) {
-                continue;
+        // Prefer a public property named 'slug'
+        if (property_exists($page, 'slug')) {
+            $value = $page->slug;
+            if (!is_string($value) || $value === '') {
+                throw PageException::slugPropertyInvalid($page, 'slug');
             }
+            return $value;
+        }
 
-            if (!$property->isPublic()) {
-                $property->setAccessible(true);
+        // Fallback to accessor method if provided
+        if (method_exists($page, 'slug')) {
+            $value = $page->slug();
+            if (!is_string($value) || $value === '') {
+                throw PageException::slugPropertyInvalid($page, 'slug');
             }
-
-            if (!$property->isInitialized($page)) {
-                throw PageException::slugPropertyUninitialized($page, $property->getName());
-            }
-
-            $value = $property->getValue($page);
-
-            if (!is_string($value)) {
-                throw PageException::slugPropertyInvalid($page, $property->getName());
-            }
-
             return $value;
         }
 
@@ -61,53 +53,30 @@ class PageService
 
     public static function getId(object $page): PageId
     {
-        $refl = new \ReflectionClass($page);
-        foreach ($refl->getProperties() as $property) {
-            $attrs = $property->getAttributes(Id::class);
-            if ($attrs === []) {
-                continue;
+        if (property_exists($page, 'id')) {
+            $id = $page->id;
+            if ($id instanceof PageId) {
+                return $id;
             }
-
-            if(!$property->isPublic()) {
-                $property->setAccessible(true);
+            // string support
+            if (is_string($id) && $id !== '') {
+                return PageId::fromString($id);
             }
+        }
 
-            $id = (string) $property->getValue($page);
-
-            return PageId::fromString($id);
+        if (method_exists($page, 'id')) {
+            $id = $page->id();
+            if ($id instanceof PageId) {
+                return $id;
+            }
+            if (is_string($id) && $id !== '') {
+                return PageId::fromString($id);
+            }
         }
 
         throw PageException::idPropertyMissing($page);
     }
-
-    public static function getTitle(object $page): string
-    {
-        $refl = new \ReflectionClass($page);
-
-        foreach ($refl->getProperties() as $property) {
-            $attrs = $property->getAttributes(Title::class);
-            if ($attrs === []) {
-                continue;
-            }
-
-            if (!$property->isPublic()) {
-                $property->setAccessible(true);
-            }
-
-            if (!$property->isInitialized($page)) {
-                throw PageException::titlePropertyUninitialized($page, $property->getName());
-            }
-
-            $value = $property->getValue($page);
-
-            if (!is_string($value)) {
-                throw PageException::titlePropertyInvalid($page, $property->getName());
-            }
-
-            return $value;
-        }
-
-        throw PageException::titlePropertyMissing($page);
-    }
+    
+    
 
 }

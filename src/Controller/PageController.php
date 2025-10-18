@@ -72,12 +72,13 @@ class PageController
             }
 
             if (empty($errors)) {
-                $page = new Page(PageId::generate()->toString(), $slug, $title, $content, null);
+                $page = new Page($content);
 
                 $this->commandBus->dispatch(
                     new AddPage(
                     $webspaceId,
                     null,
+                    $webspace->host(),
                     $slug,
                     $title,
                     $page)

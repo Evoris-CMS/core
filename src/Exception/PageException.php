@@ -9,6 +9,11 @@ class PageException extends \Exception implements NovaExceptionInterface
         return new self(sprintf('Object of type %s is not of type Page', $object::class));
     }
 
+    public static function pageNotFoundByName(string $name): self
+    {
+        return new self(sprintf('Page with name %s not found', $name));
+    }
+
     public static function slugPropertyMissing(object $object): self
     {
         return new self(sprintf('Object of type %s is missing the Slug property', $object::class));
